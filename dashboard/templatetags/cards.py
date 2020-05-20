@@ -80,6 +80,23 @@ def card_feeding_last(child):
     return {'type': 'feeding', 'feeding': instance}
 
 
+@register.inclusion_tag('cards/feeding_day.html')
+def card_feeding_day(child, date=None):
+    """
+    Total feedings for a given day.
+    :param child: an instance of the Child model.
+    :param date: a Date object for the day to filter.
+    :returns: a dictionary with count and total values for the Feeding instances.
+    """
+    if not date:
+        date = timezone.localtime().date()
+    instances = models.Feeding.objects.filter(child=child, start__date=date)
+    return {
+        'type': 'feeding',
+        'total': instances.aggregate(Sum('amount'))['amount__sum'],
+        'count': len(instances)}
+
+
 @register.inclusion_tag('cards/feeding_last_method.html')
 def card_feeding_last_method(child):
     """
