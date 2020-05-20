@@ -52,6 +52,12 @@ class TemplateTagsTestCase(TestCase):
         self.assertIsInstance(data['feeding'], models.Feeding)
         self.assertEqual(data['feeding'], models.Feeding.objects.first())
 
+    def test_card_feeding_day(self):
+        data = cards.card_feeding_day(self.child)
+        self.assertEqual(data['type'], 'feeding')
+        self.assertEqual(data['total'], None)
+        self.assertEqual(data['count'], 0)
+
     def test_card_feeding_last_method(self):
         data = cards.card_feeding_last_method(self.child)
         self.assertEqual(data['type'], 'feeding')
