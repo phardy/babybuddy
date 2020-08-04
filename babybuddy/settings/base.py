@@ -1,4 +1,5 @@
 import os
+from distutils.util import strtobool
 
 from django.utils.translation import gettext_lazy as _
 from dotenv import load_dotenv, find_dotenv
@@ -95,6 +96,17 @@ TEMPLATES = [
 ]
 
 
+# Database
+# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'data/db.sqlite3'),
+    }
+}
+
+
 # Cache
 # https://docs.djangoproject.com/en/3.0/topics/cache/
 
@@ -154,6 +166,14 @@ LANGUAGES = [
 # https://docs.djangoproject.com/en/3.0/topics/i18n/formatting/
 
 USE_L10N = True
+
+# Custom setting that can be used to override the locale-based time set by
+# USE_L10N _for specific locales_ to use 24-hour format. In order for this to
+# work with a given locale it must be set at the FORMAT_MODULE_PATH with
+# conditionals on this setting. See babybuddy/forms/en/formats.py for an example
+# implementation for the English locale.
+
+USE_24_HOUR_TIME_FORMAT = strtobool(os.environ.get('USE_24_HOUR_TIME_FORMAT') or 'False')
 
 FORMAT_MODULE_PATH = ['babybuddy.formats']
 
@@ -224,8 +244,10 @@ IMPORT_EXPORT_IMPORT_PERMISSION_CODE = 'add'
 IMPORT_EXPORT_EXPORT_PERMISSION_CODE = 'change'
 IMPORT_EXPORT_USE_TRANSACTIONS = True
 
-# Rolling session refreshes
-# How often to refresh the session
+# Session configuration
+# Used by RollingSessionMiddleware to determine how often to reset the session.
+# See https://docs.djangoproject.com/en/3.0/topics/http/sessions/
+
 ROLLING_SESSION_REFRESH = 86400
 
 # Baby Buddy configuration
